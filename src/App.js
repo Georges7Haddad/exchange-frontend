@@ -10,7 +10,7 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { getUserToken, saveUserToken } from "./localStorage";
+import { getUserToken, saveUserToken, removeUserToken } from "./localStorage";
 
 var SERVER_URL = "http://127.0.0.1:5000";
 function App() {
@@ -20,6 +20,11 @@ function App() {
   let [usdInput, setUsdInput] = useState("");
   let [transactionType, setTransactionType] = useState("usd-to-lbp");
   let [userToken, setUserToken] = useState(getUserToken());
+  let [calculatorTransactionType, setCalculatorTransactionType] = useState(
+    "usd-to-lbp"
+  );
+  let [calculatorInput, setCalculatorInput] = useState("");
+  let [calculatorResult, setCalculatorResult] = useState("");
   const States = {
     PENDING: "PENDING",
     USER_CREATION: "USER_CREATION",
@@ -86,7 +91,15 @@ function App() {
 
   function logout() {
     setUserToken(null);
-    localStorage.removeItem("TOKEN");
+    removeUserToken();
+  }
+  function calculate(input = null) {
+    let amount = input !== null ? input : calculatorInput;
+    let result =
+      calculatorTransactionType === "usd-to-lbp"
+        ? parseFloat(sellUsdRate) * amount
+        : parseFloat(buyUsdRate) * amount;
+    setCalculatorResult(result);
   }
 
   return (
@@ -153,6 +166,38 @@ function App() {
           <span id="sell-usd-rate">{sellUsdRate || "Not Available Yet"}</span>
         </h3>
         <hr />
+        <h2>Calculator</h2>
+        <form name="transaction-entry">
+          <div className="amount-input">
+            <label htmlFor="usd-amount">USD Amount</label>
+            <input
+              id="calculator-amount"
+              type="number"
+              value={calculatorInput}
+              onChange={(e) => {
+                setCalculatorInput(e.target.value);
+                calculate(e.target.value);
+              }}
+            />
+            <select
+              id="transaction-type"
+              value={calculatorTransactionType}
+              onChange={(e) => setCalculatorTransactionType(e.target.value)}
+            >
+              <option value="usd-to-lbp">USD to LBP</option>
+              <option value="lbp-to-usd">LBP to USD</option>
+            </select>
+            <br />
+            <input
+              disabled
+              id="usd-amount"
+              type="number"
+              value={calculatorResult}
+            />
+          </div>
+        </form>
+      </div>
+      <div className="wrapper">
         <h2>Record a recent transaction</h2>
         <form name="transaction-entry">
           <div className="amount-input">

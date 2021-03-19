@@ -1,6 +1,7 @@
 body {
   background-color: #e9ebf0;
   font-family: Helvetica, Arial;
+  padding: 20px;
 }
 
 .header {
@@ -44,7 +45,9 @@ body {
     width: 400px;
   }
 }
-
+#lbp-amount, #calculator-amount, #usd-amount {
+  width: 200px;
+}
 .amount-input {
   margin-bottom: 10px;
   padding: 3px 6px;
