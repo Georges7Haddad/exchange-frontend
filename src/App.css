@@ -72,3 +72,8 @@ body {
   cursor: pointer;
   opacity: 0.75;
 }
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
