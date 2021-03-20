@@ -7,6 +7,10 @@ import {
   Typography,
   Button,
   Snackbar,
+  TextField,
+  Select,
+  MenuItem,
+  Box,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { DataGrid } from "@material-ui/data-grid";
@@ -174,40 +178,44 @@ function App() {
           title="Login"
           submitText="Login"
         />
-        <h2>Today's Exchange Rate</h2>
+        <Typography variant="h5">Today's Exchange Rate</Typography>
         <p>LBP to USD Exchange Rate</p>
-        <h3>
+        <Typography variant="h6">
           Buy USD:{" "}
           <span id="buy-usd-rate">{buyUsdRate || "Not Available Yet"}</span>
-        </h3>
-        <h3>
+        </Typography>
+        <Typography variant="h6">
           Sell USD:{" "}
           <span id="sell-usd-rate">{sellUsdRate || "Not Available Yet"}</span>
-        </h3>
+        </Typography>
         <hr />
-        <h2>Calculator</h2>
+        <Typography variant="h5">Calculator</Typography>
         <form name="transaction-entry">
           <div className="amount-input">
-            <label htmlFor="usd-amount">USD Amount</label>
-            <input
+            <TextField
               id="calculator-amount"
               type="number"
+              label="Amount"
+              variant="outlined"
               value={calculatorInput}
               onChange={(e) => {
                 setCalculatorInput(e.target.value);
                 calculate(e.target.value);
               }}
             />
-            <select
+            <Box mr={1} />
+            <Select
               id="transaction-type"
               value={calculatorTransactionType}
               onChange={(e) => setCalculatorTransactionType(e.target.value)}
+              variant="outlined"
             >
-              <option value="usd-to-lbp">USD to LBP</option>
-              <option value="lbp-to-usd">LBP to USD</option>
-            </select>
-            <br />
-            <input
+              <MenuItem value="usd-to-lbp">USD to LBP</MenuItem>
+              <MenuItem value="lbp-to-usd">LBP to USD</MenuItem>
+            </Select>
+            <Box mr={1} />
+            <TextField
+              variant="outlined"
               disabled
               id="usd-amount"
               type="number"
@@ -217,39 +225,40 @@ function App() {
         </form>
       </div>
       <div className="wrapper">
-        <h2>Record a recent transaction</h2>
+        <Typography variant="h5">Record a recent transaction</Typography>
         <form name="transaction-entry">
           <div className="amount-input">
-            <label htmlFor="lbp-amount">LBP Amount</label>
-            <input
+            <TextField
               id="lbp-amount"
               type="number"
+              label="LBP Amount"
+              variant="outlined"
               value={lbpInput}
               onChange={(e) => setLbpInput(e.target.value)}
             />
-            <label htmlFor="usd-amount">USD Amount</label>
-            <input
+            <Box mr={1} />
+            <TextField
               id="usd-amount"
               type="number"
+              label="USD Amount"
+              variant="outlined"
               value={usdInput}
               onChange={(e) => setUsdInput(e.target.value)}
             />
-            <select
+            <Box mr={1} />
+            <Select
               id="transaction-type"
               value={transactionType}
               onChange={(e) => setTransactionType(e.target.value)}
+              variant="outlined"
             >
-              <option value="usd-to-lbp">USD to LBP</option>
-              <option value="lbp-to-usd">LBP to USD</option>
-            </select>
-            <button
-              id="add-button"
-              className="button"
-              type="button"
-              onClick={addItem}
-            >
+              <MenuItem value="usd-to-lbp">USD to LBP</MenuItem>
+              <MenuItem value="lbp-to-usd">LBP to USD</MenuItem>
+            </Select>
+            <Box mr={1} />
+            <Button id="add-button" onClick={addItem} className="button">
               Add
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -258,12 +267,12 @@ function App() {
           <Typography variant="h5">Your Transactions</Typography>
           <DataGrid
             columns={[
-              { field: "added_date" },
-              { field: "id" },
-              { field: "lbp_amount" },
-              { field: "usd_amount" },
-              { field: "usd_to_lbp" },
-              { field: "user_id" },
+              { field: "added_date", width: 120 },
+              { field: "id", width: 70 },
+              { field: "lbp_amount", width: 140 },
+              { field: "usd_amount", width: 140 },
+              { field: "usd_to_lbp", width: 140 },
+              { field: "user_id", width: 100 },
             ]}
             rows={userTransactions}
             autoHeight
