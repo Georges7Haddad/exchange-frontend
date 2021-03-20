@@ -1,7 +1,6 @@
 import "./App.css";
 import UserCredentialsDialog from "./UserCredentialsDialog/UserCredentialsDialog";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,6 +9,7 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import { DataGrid } from "@material-ui/data-grid";
 import { getUserToken, saveUserToken, removeUserToken } from "./localStorage";
 
 var SERVER_URL = "http://127.0.0.1:5000";
@@ -25,6 +25,7 @@ function App() {
   );
   let [calculatorInput, setCalculatorInput] = useState("");
   let [calculatorResult, setCalculatorResult] = useState("");
+  let [userTransactions, setUserTransactions] = useState([]);
   const States = {
     PENDING: "PENDING",
     USER_CREATION: "USER_CREATION",
@@ -32,6 +33,7 @@ function App() {
     USER_AUTHENTICATED: "USER_AUTHENTICATED",
   };
   let [authState, setAuthState] = useState(States.PENDING);
+
   function fetchRates() {
     fetch(`${SERVER_URL}/exchangeRate`)
       .then((response) => response.json())
@@ -41,6 +43,22 @@ function App() {
       });
   }
   useEffect(fetchRates, []);
+
+  const fetchUserTransactions = useCallback(() => {
+    fetch(`${SERVER_URL}/transaction`, {
+      headers: {
+        Authorization: `${userToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((transactions) => setUserTransactions(transactions));
+  }, [userToken]);
+  console.log(userTransactions);
+  useEffect(() => {
+    if (userToken) {
+      fetchUserTransactions();
+    }
+  }, [fetchUserTransactions, userToken]);
 
   function addItem() {
     let data = {
@@ -52,6 +70,7 @@ function App() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: userToken,
       },
       body: JSON.stringify(data),
     }).then(fetchRates);
@@ -234,6 +253,23 @@ function App() {
           </div>
         </form>
       </div>
+      {userToken && (
+        <div className="wrapper">
+          <Typography variant="h5">Your Transactions</Typography>
+          <DataGrid
+            columns={[
+              { field: "added_date" },
+              { field: "id" },
+              { field: "lbp_amount" },
+              { field: "usd_amount" },
+              { field: "usd_to_lbp" },
+              { field: "user_id" },
+            ]}
+            rows={userTransactions}
+            autoHeight
+          />{" "}
+        </div>
+      )}
     </div>
   );
 }
